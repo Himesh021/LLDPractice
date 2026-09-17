@@ -49,16 +49,25 @@ The same reasoning was applied whenever a “platform-scale” pattern appeared:
 
 ## Code generation
 
-Most application files were drafted by the assistant and then checked by running install, tests, and (where possible) the servers. Types, error codes, and validation rules were aligned to the spec rather than left as generic CRUD.
+Most application files were drafted with Cursor agent assistance and then reviewed and verified through local builds, automated tests, browser testing, and deployment checks. The final implementation was not accepted solely because it was generated successfully; runtime behavior and API flows were tested before submission.
+
+Types, error codes, validation rules, and API contracts were aligned to the assessment requirements rather than left as generic CRUD.
 
 ## Debugging
 
-Failures expected during bring-up (and handled if they appear):
+AI assistance was also used during debugging, but fixes were verified by running the relevant builds, tests, and deployed application.
+
+Issues encountered included:
 
 - ESM vs CommonJS with Jest → backend stays CommonJS
 - Route order: `/history` registered before `/:id`
 - Model JSON that does not add up → parser recomputes the total
 - Missing API keys → `FEEDBACK_PROVIDER=mock` default
+- Render TypeScript build failure caused by the removed `moduleResolution=node10` option → removed the obsolete compiler option while keeping the backend CommonJS configuration
+- Render production build missing TypeScript/type declaration packages → moved the required compiler/type packages into the backend dependencies so the deployment build could compile
+- MongoDB Atlas authentication failure during deployment → corrected the Atlas database-user configuration and verified the deployed API
+- Full backend integration tests were blocked in the automated environment because `mongodb-memory-server` attempted to download a MongoDB binary and the download timed out. This was treated as an environment/network limitation rather than hiding the failure. Frontend tests and builds, backend builds, and the deployed end-to-end flow were verified separately.
+- Vercel frontend API configuration was verified against the deployed Render API endpoint.
 
 ## Prompt development
 
@@ -69,6 +78,8 @@ The product evaluator prompt is `backend/src/prompts/evaluation.prompt.ts`. It t
 - Return JSON only, with fixed category maxima
 
 That prompt is separate from the Cursor session that wrote the app.
+
+The evaluator was tested with intentionally different submissions, including a weak design, a keyword-heavy design that name-dropped patterns, and a structurally stronger design. The keyword-heavy submission did not receive a higher score simply because it contained more pattern names.
 
 ## Honesty limits
 
