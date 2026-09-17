@@ -4,9 +4,26 @@ A small modular-monolith app for practicing **Low-Level Design**. Learners pick 
 
 This is an MVP for a 2-day engineering assessment. It is intentionally a **single backend + single frontend**, not a distributed system.
 
+## Live Demo
+
+- **Frontend:** https://lld-practice-omega.vercel.app/
+- **Backend API:** https://lldpractice.onrender.com/api/problems
+- **GitHub:** https://github.com/Himesh021/LLDPractice
+
 ## Product loop
 
 Choose problem → Read requirements → Design → Submit → Evaluate → Review → Try again → Track improvement
+
+## Key Features
+
+- Five LLD practice problems with requirements and expected concepts
+- Structured design workspace for classes, interfaces, relationships, methods, and explanation
+- AI-assisted evaluation across six LLD dimensions
+- Category-level scoring with a total score out of 10
+- Strengths, weaknesses, suggestions, and improved-design feedback
+- Submission history and retry workflow
+- Mock evaluation provider for deterministic local/demo testing
+- Provider abstraction supporting OpenAI, Groq, and Mock evaluators
 
 ## Stack
 
@@ -132,6 +149,19 @@ Category scores are clamped and summed so the stored total always matches the ca
 
 A problem counts as **solved** on the dashboard when the latest evaluated attempt scores **7 or higher**.
 
+## Assessment Scope
+
+This project was implemented as a focused 2-day engineering assessment MVP. The architecture intentionally favors a modular monolith with clear boundaries over premature distributed-system complexity.
+
+The main engineering focus was:
+
+1. LLD practice workflow
+2. Structured evaluation and feedback
+3. Extensible evaluation-provider architecture
+4. Submission history and improvement loop
+5. Automated testing
+6. Deployment and reproducibility
+
 ## AI usage
 
 See [AI_USAGE.md](AI_USAGE.md). This project was built with AI assistance; architecture stayed a modular monolith on purpose.
@@ -147,3 +177,17 @@ See [AI_USAGE.md](AI_USAGE.md). This project was built with AI assistance; archi
 ## License
 
 Assessment / educational sample. Not a production learning product.
+
+## Assessment Scope
+
+This project was implemented as a focused 2-day engineering assessment MVP. The architecture intentionally favors a modular monolith with clear boundaries over premature distributed-system complexity.
+
+The main engineering focus was:
+
+1. LLD practice workflow
+2. Structured evaluation and feedback
+3. Extensible evaluation-provider architecture
+4. Submission history and improvement loop
+5. Automated testing
+6. Deployment and reproducibility
+
