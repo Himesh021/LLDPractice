@@ -1,6 +1,14 @@
 # API
 
-Base URL: `http://localhost:4000`
+## Base URLs
+
+Local:
+
+`http://localhost:4000`
+
+Production:
+
+`https://lldpractice.onrender.com`
 
 Error shape:
 
@@ -33,6 +41,19 @@ Error shape:
 ```
 
 `averageScore` is the mean of each problem’s **latest evaluated** score, or `null`.
+
+## Endpoint Summary
+
+| Method | Endpoint | Purpose |
+| --- | --- | --- |
+| GET | `/api/health` | Health check |
+| GET | `/api/stats` | Dashboard statistics |
+| GET | `/api/problems` | List practice problems |
+| GET | `/api/problems/:id` | Get problem details |
+| POST | `/api/submissions` | Create and evaluate a submission |
+| GET | `/api/submissions/history` | View previous attempts |
+| GET | `/api/submissions/:id` | View submission and feedback |
+| POST | `/api/submissions/:id/evaluate` | Retry evaluation |
 
 ## GET /api/problems
 
