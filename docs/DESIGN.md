@@ -44,15 +44,22 @@ Browser
 `createApp` accepts an injected `FeedbackProvider` so tests never call a network model.
 
 **Why a monolith:** the domain is one product with a handful of documents. Extra processes would add failure modes without changing the LLD of the domain.
-
 ## 6. Domain model
 
-- **Problem**: prompt + rubric hints (`expectedConcepts`).
-- **Submission**: one attempt; `solution` is a value object of five strings; `status` is `pending | evaluating | evaluated | failed`.
-- **Feedback**: one-to-one with a successful evaluation (replaced on retry).
-- No User collection: implicit single learner.
+- **Problem**: prompt + rubric hints (`expectedConcepts`). Defines what the learner is expected to design against.
+- **Submission**: one learner attempt. `solution` is a value object containing five structured design sections. `status` is `pending | evaluating | evaluated | failed`.
+- **Feedback**: evaluation result associated one-to-one with a submission. Contains category scores, strengths, weaknesses, suggestions, and improved design.
 
-Services own use cases. Repositories own persistence. Providers own model I/O. Controllers map HTTP.
+### Responsibilities
+
+- **ProblemService** — retrieves problem definitions and problem details.
+- **SubmissionService** — validates submissions, persists attempts, coordinates evaluation, and handles retry evaluation.
+- **StatsService** — derives dashboard statistics from stored submissions.
+- **Repositories** — isolate MongoDB/Mongoose persistence from business logic.
+- **FeedbackProvider** — abstracts the evaluation model/vendor.
+- **Controllers** — translate HTTP requests/responses and validation errors.
+
+No User collection is used because authentication and multi-user behavior are outside the MVP scope.
 
 ## 7. Database model
 
@@ -87,9 +94,23 @@ SubmissionService.evaluateInternal
 
 Prompt lives in `src/prompts/evaluation.prompt.ts` so it is not buried in the HTTP client.
 
+The evaluator receives both the problem requirements and the learner's structured solution. This keeps evaluation problem-specific rather than treating every submission as a generic LLD answer.
+
+The provider boundary also separates application logic from model-specific API formats, making the OpenAI, Groq, and Mock implementations interchangeable at the application boundary.
+
 **Why clamp and re-sum:** models drift on arithmetic. Stored scores must honor the published maxima and add up.
 
 **Why retry is a new POST on the same id:** the design is already saved; only the review is redone.
+
+### Evaluator validation
+
+The evaluator was manually tested with three Parking Lot submissions:
+
+1. A minimal/weak design with limited structure.
+2. A keyword-heavy design that mentioned multiple patterns but provided limited supporting design evidence.
+3. A structurally stronger design with explicit responsibilities, relationships, interfaces, and variation points.
+
+The keyword-heavy submission did not receive a higher score simply because it contained more pattern names. This helped validate the prompt's requirement to evaluate supporting design evidence rather than keyword presence alone.
 
 ## 10. Extensibility
 
@@ -125,7 +146,7 @@ Not tested here: live OpenAI/Groq accounts (see README).
 | Mock default | Weak pedagogical scores | Demo and CI without secrets |
 | Textareas not UML | Less “wow” | Fits the time box; model-friendly |
 | No auth | Shared DB if deployed | Matches MVP scope |
-| Latest score ≥ 7 = solved | Arbitrary | Dashboard needs a number |
+| Latest score ≥ 7 = solved | Fixed threshold may not fit every problem | Provides a simple, transparent completion signal for the MVP |
 
 ## 14. Future improvements
 
